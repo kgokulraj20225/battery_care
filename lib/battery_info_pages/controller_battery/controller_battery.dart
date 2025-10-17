@@ -44,7 +44,7 @@ class battery_info extends GetxController with GetSingleTickerProviderStateMixin
     battery_Saver.value=value;
   }
 
-  void getbattery_level() async {
+  Future<void> getbattery_level() async {
     battery_level.value = await battery.batteryLevel;
   }
 

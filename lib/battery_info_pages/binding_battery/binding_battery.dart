@@ -9,5 +9,6 @@ class battery_binding extends Bindings{
   void dependencies() {
     Get.put(battery_info());
     Get.put(song_picker_controller());
+    Get.put(NumberController());
   }
 }

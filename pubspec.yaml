@@ -45,6 +45,7 @@ dependencies:
   file_picker: ^9.0.1
   audioplayers: ^5.0.1
   lottie: ^3.2.0
+  numberpicker:
 
 #  battery_info: ^1.1.1
 

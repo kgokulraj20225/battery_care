@@ -278,7 +278,7 @@ class _song_pickerState extends State<song_picker> {
                         children: [
                           GestureDetector(
                             onTap: () {
-                              c.song_picker();
+                              Get.toNamed(AppRoutes.alarm_set_page);
                             },
                             child: Container(
                               height: 100,
@@ -294,7 +294,7 @@ class _song_pickerState extends State<song_picker> {
                                   children: [
                                     Flexible(
                                       child: Obx(() => Text(
-                                            '${c.selected_song}',
+                                            'Set the alarm',
                                             style: TextStyle(fontSize: 15,color: bt.battery_Saver==true?Colors.orange:bt.battery_state == 'charging' ? Colors.green : Colors.red),maxLines: 2,
                                         softWrap: true,
                                         overflow: TextOverflow.ellipsis,

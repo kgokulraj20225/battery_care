@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:trial_app/battery_info_pages/controller_battery/controller_battery.dart';
 
 class song_picker_controller extends GetxController{
   var selected_song='select the song'.obs;
@@ -18,4 +19,18 @@ class song_picker_controller extends GetxController{
   }
 
 
+}
+
+class NumberController extends GetxController {
+  var selectedNumber = 0.obs; // observable number
+  final battery_info bat = Get.put(battery_info());
+
+  @override
+  void onInit() async {
+    super.onInit();
+
+    // fetch battery level initially
+    // await bat.getbattery_level();
+    selectedNumber.value=bat.battery_level.value;
+  }
 }
