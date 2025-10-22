@@ -1,13 +1,15 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:file_picker/file_picker.dart';
-import 'package:lottie/lottie.dart';
 import 'package:get/get.dart';
+import 'package:lottie/lottie.dart';
+import 'package:trial_app/battery_info_pages/controller_battery/animation_controller.dart';
+import 'package:trial_app/battery_info_pages/pages_battery/animation_pages.dart';
 import 'package:trial_app/route/app_route.dart';
 
 import '../controller_battery/controller_battery.dart';
 import '../controller_battery/song_picker_controller.dart';
+
 
 class song_picker extends StatefulWidget {
   const song_picker({super.key});
@@ -19,26 +21,39 @@ class song_picker extends StatefulWidget {
 class _song_pickerState extends State<song_picker> {
   final song_picker_controller c = Get.find();
   final battery_info bt = Get.find();
-
+  final animation_controller animate = Get.find();
   @override
   void initState() {
     print('indicator${bt.battery_state}');
+    animate.get_anime_value();
+
     super.initState();
   }
+
+
+
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Obx(()=>bt.battery_state !='charging'?
-        Padding(
-          padding: const EdgeInsets.only(right: 30.0),
-          child: Image.asset('assets/ChatGPT Image Oct 12, 2025, 11_58_47 PM.png',height: 89,),
-        ):Padding(
+        title: Padding(
           padding: const EdgeInsets.only(left: 22.0),
-          child: Lottie.asset('assets/lottie/Earth globe rotating with Seamless loop animation.json',height: 90,),
-        )),
+          child: Lottie.asset(
+              'assets/lottie/Earth globe rotating with Seamless loop animation.json',
+              height: 90,
+              controller: animate.globe, onLoaded: (com) {
+            animate.globe..duration = com.duration;
+            print('battery state: ${bt.battery_state.value}');
+            if(bt.battery_state.value == 'charging') {
+              animate.globe.repeat();
+            } else {
+              animate.globe.stop();
+            };
+          }),
+        ),
         backgroundColor: Colors.white,
       ),
       body: Padding(
@@ -60,15 +75,19 @@ class _song_pickerState extends State<song_picker> {
                       decoration: BoxDecoration(
                         color: Colors.white,
                         border: Border.all(
-                            color: bt.battery_Saver==true?Colors.orange:bt.battery_state == 'charging'
-                                ? Colors.green
-                                : Colors.red,
+                            color: bt.battery_Saver == true
+                                ? Colors.orange
+                                : bt.battery_state == 'charging'
+                                    ? Colors.green
+                                    : Colors.red,
                             width: 5),
                         boxShadow: [
                           BoxShadow(
-                              color: bt.battery_Saver==true?Colors.orange.shade300:bt.battery_state == 'charging'
-                                  ? Colors.green.shade300
-                                  : Colors.red.withOpacity(0.3),
+                              color: bt.battery_Saver == true
+                                  ? Colors.orange.shade300
+                                  : bt.battery_state == 'charging'
+                                      ? Colors.green.shade300
+                                      : Colors.red.withOpacity(0.3),
                               blurRadius: 20)
                         ],
                         borderRadius:
@@ -91,15 +110,21 @@ class _song_pickerState extends State<song_picker> {
                       decoration: BoxDecoration(
                         color: Colors.white,
                         border: Border.all(
-                          color: bt.battery_Saver==true?Colors.orange:isCharging ? Colors.green : Colors.red,
+                          color: bt.battery_Saver == true
+                              ? Colors.orange
+                              : isCharging
+                                  ? Colors.green
+                                  : Colors.red,
                           width: 5,
                         ),
                         borderRadius: BorderRadius.circular(30),
                         boxShadow: [
                           BoxShadow(
-                            color: bt.battery_Saver==true?Colors.orange.shade300:isCharging
-                                ? Colors.green.withOpacity(0.3)
-                                : Colors.red.withOpacity(0.3),
+                            color: bt.battery_Saver == true
+                                ? Colors.orange.shade300
+                                : isCharging
+                                    ? Colors.green.withOpacity(0.3)
+                                    : Colors.red.withOpacity(0.3),
                             blurRadius: 20,
                           )
                         ],
@@ -114,13 +139,15 @@ class _song_pickerState extends State<song_picker> {
                                   height: fillHeight,
                                   width: double.infinity,
                                   decoration: BoxDecoration(
-                                    color: bt.battery_Saver==true?Colors.orange.shade300:isCharging
-                                        ? Colors.green.withOpacity(0.6)
-                                        : Colors.red.withOpacity(0.6),
+                                    color: bt.battery_Saver == true
+                                        ? Colors.orange.shade300
+                                        : isCharging
+                                            ? Colors.green.withOpacity(0.6)
+                                            : Colors.red.withOpacity(0.6),
                                     borderRadius: BorderRadius.vertical(
                                       bottom: Radius.circular(25),
                                       top: Radius.circular(
-                                          bt.battery_level.value == 100
+                                          bt.battery_level.value >= 90
                                               ? 25
                                               : -40),
                                     ),
@@ -140,8 +167,7 @@ class _song_pickerState extends State<song_picker> {
                                     size: 35,
                                     shadows: [
                                       Shadow(
-                                          color: bt.maincolor,
-                                          blurRadius: 20)
+                                          color: bt.maincolor, blurRadius: 20)
                                     ],
                                   ),
                                 Row(
@@ -272,7 +298,7 @@ class _song_pickerState extends State<song_picker> {
                   Flexible(
                     flex: 1,
                     child: Obx(
-                      ()=> Column(
+                      () => Column(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -285,8 +311,13 @@ class _song_pickerState extends State<song_picker> {
                               decoration: BoxDecoration(
                                   // color: Colors.red,
                                   borderRadius: BorderRadius.circular(10),
-                                  border:
-                                      Border.all(color: bt.battery_Saver==true?Colors.orange:bt.battery_state == 'charging' ? Colors.green : Colors.red, width: 2)),
+                                  border: Border.all(
+                                      color: bt.battery_Saver == true
+                                          ? Colors.orange
+                                          : bt.battery_state == 'charging'
+                                              ? Colors.green
+                                              : Colors.red,
+                                      width: 2)),
                               child: Center(
                                 child: Row(
                                   mainAxisAlignment:
@@ -295,33 +326,25 @@ class _song_pickerState extends State<song_picker> {
                                     Flexible(
                                       child: Obx(() => Text(
                                             'Set the alarm',
-                                            style: TextStyle(fontSize: 15,color: bt.battery_Saver==true?Colors.orange:bt.battery_state == 'charging' ? Colors.green : Colors.red),maxLines: 2,
-                                        softWrap: true,
-                                        overflow: TextOverflow.ellipsis,
+                                            style: TextStyle(
+                                                fontSize: 15,
+                                                color: bt.battery_Saver == true
+                                                    ? Colors.orange
+                                                    : bt.battery_state ==
+                                                            'charging'
+                                                        ? Colors.green
+                                                        : Colors.red),
+                                            maxLines: 2,
+                                            softWrap: true,
+                                            overflow: TextOverflow.ellipsis,
                                           )),
                                     ),
                                     Lottie.asset(
-                                      "assets/lottie/loading.json",
+                                      "assets/lottie/Alarm Clock.json",
+
                                       fit: BoxFit.contain,
                                       height: 70,
                                     ),
-                                    // ListTile(
-                                    //   contentPadding:
-                                    //       const EdgeInsets.symmetric(horizontal: 16),
-                                    //   trailing: SizedBox(
-                                    //     width: 70,
-                                    //     height: 100,
-                                    //     child: Lottie.asset(
-                                    //       "assets/lottie/loading.json",
-                                    //       fit: BoxFit.contain,
-                                    //       height: 100,
-                                    //     ),
-                                    //   ),
-                                    //   leading: Obx(() => Text(
-                                    //         '${c.selected_song}',
-                                    //         style: TextStyle(fontSize: 15),
-                                    //       )),
-                                    // ),
                                   ],
                                 ),
                               ),
@@ -337,18 +360,34 @@ class _song_pickerState extends State<song_picker> {
                                 height: 100,
                                 decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(10),
-                                    border:
-                                        Border.all(color: bt.battery_Saver==true?Colors.orange:bt.battery_state == 'charging' ? Colors.green : Colors.red, width: 2)),
+                                    border: Border.all(
+                                        color: bt.battery_Saver == true
+                                            ? Colors.orange
+                                            : bt.battery_state == 'charging'
+                                                ? Colors.green
+                                                : Colors.red,
+                                        width: 2)),
                                 child: Center(
                                   child: ListTile(
                                     trailing: Lottie.asset(
                                       "assets/lottie/Gear.json",
+                                      controller: animate.animationController,
+                                      onLoaded: (animates) {
+                                        animate.animationController
+                                          ..duration = animates.duration;
+                                      },
                                       width: 50,
                                       height: 100,
                                     ),
                                     leading: Text(
                                       'Settings',
-                                      style: TextStyle(fontSize: 15, color: bt.battery_Saver==true?Colors.orange:bt.battery_state == 'charging' ? Colors.green : Colors.red),
+                                      style: TextStyle(
+                                          fontSize: 15,
+                                          color: bt.battery_Saver == true
+                                              ? Colors.orange
+                                              : bt.battery_state == 'charging'
+                                                  ? Colors.green
+                                                  : Colors.red),
                                     ),
                                   ),
                                 ),
@@ -364,70 +403,88 @@ class _song_pickerState extends State<song_picker> {
                     child: Padding(
                       padding: const EdgeInsets.all(10.0),
                       child: Obx(
-                        ()=> Column(
+                        () => Column(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
-                             AnimatedContainer(
-                                decoration: BoxDecoration(
-                                  color: bt.battery_Saver==true?Colors.transparent:bt.battery_state.value == 'charging'
-                            ? Colors.transparent
-                            : Colors.red,
-                                    borderRadius: BorderRadius.circular(10),
-                                    border:
-                                        Border.all(color: bt.battery_Saver==true?Colors.orange:bt.battery_state.value == 'charging'
-                                            ? Colors.green
-                                            : Colors.transparent, width: 2)),
-                                height: 160,
-                                duration: Duration(seconds: 1),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Center(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      // mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        Text(
-                                          '${100 - bt.battery_level.value}%',
-                                          style: TextStyle(
-                                              fontSize: 45,
-                                              color: bt.battery_Saver==true?Colors.orange:bt.battery_state.value ==
-                                                      'charging'
-                                                  ? Colors.green
-                                                  : Colors.white),
-                                        ),
-                                        Text(
-                                          'to Full charge',
-                                          style: TextStyle(
-                                              color: bt.battery_Saver==true?Colors.orange:bt.battery_state.value ==
-                                                      'charging'
-                                                  ? Colors.green
-                                                  : Colors.white,
-                                              fontSize: 18),
-                                        ),
-                                      ],
-                                    ),
+                            AnimatedContainer(
+                              decoration: BoxDecoration(
+                                  color: bt.battery_Saver == true
+                                      ? Colors.transparent
+                                      : bt.battery_state.value == 'charging'
+                                          ? Colors.transparent
+                                          : Colors.red,
+                                  borderRadius: BorderRadius.circular(10),
+                                  border: Border.all(
+                                      color: bt.battery_Saver == true
+                                          ? Colors.orange
+                                          : bt.battery_state.value == 'charging'
+                                              ? Colors.green
+                                              : Colors.transparent,
+                                      width: 2)),
+                              height: 160,
+                              duration: Duration(seconds: 1),
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Center(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    // mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        '${100 - bt.battery_level.value}%',
+                                        style: TextStyle(
+                                            fontSize: 45,
+                                            color: bt.battery_Saver == true
+                                                ? Colors.orange
+                                                : bt.battery_state.value ==
+                                                        'charging'
+                                                    ? Colors.green
+                                                    : Colors.white),
+                                      ),
+                                      Text(
+                                        'to Full charge',
+                                        style: TextStyle(
+                                            color: bt.battery_Saver == true
+                                                ? Colors.orange
+                                                : bt.battery_state.value ==
+                                                        'charging'
+                                                    ? Colors.green
+                                                    : Colors.white,
+                                            fontSize: 18),
+                                      ),
+                                    ],
                                   ),
                                 ),
+                              ),
                             ),
                             Padding(
                               padding: const EdgeInsets.only(top: 8.0),
                               child: AnimatedContainer(
                                 decoration: BoxDecoration(
-                                  color: bt.battery_Saver==true?Colors.orange:bt.battery_state.value == 'charging'
-                                      ? Colors.green
-                                      : Colors.red,
-                                    borderRadius: BorderRadius.circular(10),
-                                   ),
+                                  color: bt.battery_Saver == true
+                                      ? Colors.orange
+                                      : bt.battery_state.value == 'charging'
+                                          ? Colors.green
+                                          : Colors.red,
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
                                 height: 50,
                                 duration: Duration(seconds: 1),
                                 child: Center(
-                                  child: bt.battery_Saver==true?Text('Battery Saver',style: TextStyle(color: Colors.white,fontSize: 20),):Text(
-                                    '${bt.battery_state}',
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 20),
-                                  ),
+                                  child: bt.battery_Saver == true
+                                      ? Text(
+                                          'Battery Saver',
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 20),
+                                        )
+                                      : Text(
+                                          '${bt.battery_state}',
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 20),
+                                        ),
                                 ),
                               ),
                             )
@@ -442,7 +499,7 @@ class _song_pickerState extends State<song_picker> {
             Padding(
               padding: const EdgeInsets.only(top: 10.0),
               child: Obx(
-                ()=> AnimatedContainer(
+                () => AnimatedContainer(
                   duration: Duration(seconds: 1),
                   decoration: BoxDecoration(
                       color: Colors.white,
@@ -452,17 +509,30 @@ class _song_pickerState extends State<song_picker> {
                       //     spreadRadius: 2
                       // )],
                       borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: bt.battery_Saver==true?Colors.orange:bt.battery_state == 'charging' ? Colors.green : Colors.red,width: 2)
-                  ),
+                      border: Border.all(
+                          color: bt.battery_Saver == true
+                              ? Colors.orange
+                              : bt.battery_state == 'charging'
+                                  ? Colors.green
+                                  : Colors.red,
+                          width: 2)),
                   height: 100,
                   child: Center(
                     child: ListTile(
-                      leading: Text('Battery Saver',style: TextStyle(color: bt.battery_Saver==true?Colors.orange:bt.battery_state == 'charging' ? Colors.green : Colors.red,fontSize: 25),),
-                      trailing:
-                      Switch(
-                        activeColor:Colors.orangeAccent,
+                      leading: Text(
+                        'Battery Saver',
+                        style: TextStyle(
+                            color: bt.battery_Saver == true
+                                ? Colors.orange
+                                : bt.battery_state == 'charging'
+                                    ? Colors.green
+                                    : Colors.red,
+                            fontSize: 25),
+                      ),
+                      trailing: Switch(
+                        activeColor: Colors.orangeAccent,
                         onChanged: (bool newValue) {
-                          bt.battery_Saver(newValue);
+                          bt.batterys_saver(newValue);
                         },
                         value: bt.battery_Saver.value,
                       ),

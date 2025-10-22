@@ -44,8 +44,12 @@ dependencies:
   flutter_local_notifications: ^18.0.1
   file_picker: ^9.0.1
   audioplayers: ^5.0.1
+  just_audio:
   lottie: ^3.2.0
   numberpicker:
+  flutter_background_service:
+  flutter_background_service_android:
+
 
 #  battery_info: ^1.1.1
 
@@ -82,6 +86,7 @@ flutter:
     - assets/lottie/Earth globe rotating with Seamless loop animation.json
     - assets/img.png
     - assets/ChatGPT Image Oct 12, 2025, 11_58_47 PM.png
+    - assets/lottie/Alarm Clock.json
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

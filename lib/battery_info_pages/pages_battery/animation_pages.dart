@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:trial_app/battery_info_pages/controller_battery/animation_controller.dart';
 import 'package:trial_app/battery_info_pages/controller_battery/controller_battery.dart';
 // import 'package:trial_app/battery_info//';
 
@@ -41,6 +43,18 @@ class Features extends StatefulWidget {
 
 class _FeaturesState extends State<Features> {
   final battery_info bt=Get.find();
+  final animation_controller animate=Get.find();
+  bool to_store_anime=false;
+
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
+
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -68,9 +82,10 @@ class _FeaturesState extends State<Features> {
                      Switch(
                       activeColor:Colors.deepPurple,
                       onChanged: (bool newValue) {
-                        bt.option(newValue);
+
+                        animate.stop(newValue);
                       },
-                      value: bt.op.value,
+                      value: animate.animation.value,
                     ),
                   ),
                 ),

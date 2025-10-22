@@ -16,14 +16,15 @@ class battery_info extends GetxController with GetSingleTickerProviderStateMixin
 
   @override
   void onInit() {
-    battery.onBatteryStateChanged.listen((state){
-      battery_state.value=state.name;
-      getbattery_level();
-    });
-
+    // battery.onBatteryStateChanged.listen((state){
+    //   battery_state.value=state.name;
+    //   getbattery_level();
+    // });
+    get_batter_state_fun();
     lottieController = AnimationController(vsync: this);
     super.onInit();
   }
+
   @override
   void onClose() {
     lottieController.dispose();
@@ -34,8 +35,19 @@ class battery_info extends GetxController with GetSingleTickerProviderStateMixin
     if(battery_state.value=='charging') return Colors.green;
     return Colors.red;
   }
+  void get_batter_state_fun(){
+    battery.onBatteryStateChanged.listen((state){
+      battery_state.value=state.name;
+      getbattery_level();
+    });
+  }
+
+  Future<void> getbattery_level() async {
+    battery_level.value = await battery.batteryLevel;
+  }
   void option(bool value) async{
     op.value=value;
+
   }
   void stopAnimation() {
     lottieController.stop();
@@ -44,9 +56,7 @@ class battery_info extends GetxController with GetSingleTickerProviderStateMixin
     battery_Saver.value=value;
   }
 
-  Future<void> getbattery_level() async {
-    battery_level.value = await battery.batteryLevel;
-  }
+
 
   // void getbattery_state() async{
   //   final BatteryState state = await battery.batteryState;
