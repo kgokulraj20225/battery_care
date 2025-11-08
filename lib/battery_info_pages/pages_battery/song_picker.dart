@@ -6,8 +6,8 @@ import 'package:lottie/lottie.dart';
 import 'package:trial_app/battery_info_pages/controller_battery/animation_controller.dart';
 import 'package:trial_app/battery_info_pages/pages_battery/animation_pages.dart';
 import 'package:trial_app/route/app_route.dart';
-
 import '../controller_battery/controller_battery.dart';
+import '../controller_battery/number_controller.dart';
 import '../controller_battery/song_picker_controller.dart';
 
 
@@ -22,18 +22,18 @@ class _song_pickerState extends State<song_picker> {
   final song_picker_controller c = Get.find();
   final battery_info bt = Get.find();
   final animation_controller animate = Get.find();
+  final NumberController number =Get.find();
+
+
   @override
   void initState() {
     print('indicator${bt.battery_state}');
     animate.get_anime_value();
-
+    number.get_user_selected_value();
+    c.get_user_select_songs();
+    c.alarm_on_off_switch_do_logic(number.selectedNumber.value);
     super.initState();
   }
-
-
-
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -46,12 +46,12 @@ class _song_pickerState extends State<song_picker> {
               height: 90,
               controller: animate.globe, onLoaded: (com) {
             animate.globe..duration = com.duration;
-            print('battery state: ${bt.battery_state.value}');
-            if(bt.battery_state.value == 'charging') {
-              animate.globe.repeat();
-            } else {
-              animate.globe.stop();
-            };
+            // print('battery state: ${bt.battery_state.value}');
+            // if(bt.battery_state.value == 'charging') {
+            //   animate.globe.repeat();
+            // } else {
+            //   animate.globe.stop();
+            // };
           }),
         ),
         backgroundColor: Colors.white,

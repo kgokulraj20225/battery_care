@@ -8,6 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../service/background_service.dart';
 import '../controller_battery/animation_controller.dart';
 import '../controller_battery/controller_battery.dart';
+import '../controller_battery/number_controller.dart';
 import '../controller_battery/song_picker_controller.dart';
 
 class set_alarm_to_cutoff extends StatefulWidget {
@@ -61,8 +62,7 @@ class _Alarm_scroll_WheelState extends State<Alarm_scroll_Wheel>
   void initState() {
     super.initState();
     // c.set_battery_level();
-    c.get_user_selected_value();
-    song.get_user_select_songs();
+    // song.initializeAlarmState();
     // get_anime_value();
   }
 
@@ -113,10 +113,11 @@ class _Alarm_scroll_WheelState extends State<Alarm_scroll_Wheel>
                                 textStyle: TextStyle(color: Colors.grey, fontSize: 20),
                                 selectedTextStyle: TextStyle(
                                     color: Colors.black, fontSize: 30),
-                                onChanged: (value) => {
+                                onChanged: (value)=>{
                                   c.selectedNumber.value = value,
                                   c.set_user_selected_value(value),
-                                  song.alarm_on_off_button_fun(value),
+                                  song.alarm_on_off_switch_do_logic(c.selectedNumber.value),
+                                // await initializeService(),
                                   print('user picker number :${c.selectedNumber.value}')
                                 },
                                 decoration: BoxDecoration(
@@ -274,7 +275,8 @@ class _Alarm_scroll_WheelState extends State<Alarm_scroll_Wheel>
                       } else {
                         // await initializedService();
                         song.alarm_on_off_switch();
-                        song.alarm_on_off_button_fun(c.selectedNumber.value);
+                        song.alarm_on_off_switch_do_logic(c.selectedNumber.value);
+                        // song.alarm_on_off_button_fun();
                       }
                     },
                     child: Card(

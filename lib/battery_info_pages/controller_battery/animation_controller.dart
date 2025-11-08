@@ -14,21 +14,29 @@ class animation_controller extends GetxController
 
   @override
   void onInit() {
-    // TODO: implement onInit
     super.onInit();
-    animationController =
-        AnimationController(vsync: this, duration: Duration(seconds: 1));
-    globe = AnimationController(vsync: this, duration: Duration(seconds: 1));
-    if (globe.duration != null) {
-      if (battery_states.battery_state.value == 'charging') {
-        globe.repeat();
-      } else {
-        globe.stop();
-      }}
-      print('${battery_states.battery_level.value}');
-    }
 
-    @override
+    animationController = AnimationController(vsync: this, duration: Duration(seconds: 1));
+    globe = AnimationController(vsync: this, duration: Duration(seconds: 1));
+
+    // Run one time at start
+    _updateGlobe(battery_states.battery_state.value);
+
+    // ✅ React every time battery_state changes
+    ever(battery_states.battery_state, (state) {
+      _updateGlobe(state);
+    });
+  }
+  void _updateGlobe(String state) {
+    if (state == 'charging') {
+      globe.repeat();
+    } else {
+      globe.stop();
+    }
+  }
+
+
+  @override
     void onClose() {
       // TODO: implement onClose
       super.onClose();
