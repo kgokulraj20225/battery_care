@@ -62,19 +62,21 @@ class song_picker_controller extends GetxController {
   void alarm_on_off_switch_do_logic(int value) async {
     final service = FlutterBackgroundService();
     if (alarm_on_off.value) {
-      if (value != battery.battery_level.value) {
-        // stopSong();
-        service.invoke('stopAlarm');
-        // await NotificationService().showNotification(
-        //   id: 1,
-        //   title: "Alarm!",
-        //   body: "Wake up!",
-        // );
-      }
-      // else{
+      // if (value != battery.battery_level.value) {
+      //   // return ;
       //   stopSong();
+      //   // service.invoke('stopAlarm');
+      //   // await NotificationService().showNotification(
+      //   //   id: 1,
+      //   //   title: "Alarm!",
+      //   //   body: "Wake up!",
+      //   // );
       // }
-      initializeService();
+      // // else{
+      // //   stopSong();
+      // // }
+      service.invoke('stopService');
+      await initializeService();
     } else {
       service.invoke('stopService'); // stop background
       stopSong();

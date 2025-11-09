@@ -64,6 +64,7 @@ class _Alarm_scroll_WheelState extends State<Alarm_scroll_Wheel>
     // c.set_battery_level();
     // song.initializeAlarmState();
     // get_anime_value();
+    // song.alarm_on_off_switch_do_logic(c.selectedNumber.value);
   }
 
   @override

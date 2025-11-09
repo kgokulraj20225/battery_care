@@ -31,7 +31,7 @@ class _song_pickerState extends State<song_picker> {
     animate.get_anime_value();
     number.get_user_selected_value();
     c.get_user_select_songs();
-    c.alarm_on_off_switch_do_logic(number.selectedNumber.value);
+    // c.alarm_on_off_switch_do_logic(number.selectedNumber.value);
     super.initState();
   }
   @override

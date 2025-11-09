@@ -71,6 +71,7 @@ class battery_info extends GetxController with GetSingleTickerProviderStateMixin
 
 
 
+
   // void getbattery_state() async{
   //   final BatteryState state = await battery.batteryState;
   //   battery_state.value= state.name;
