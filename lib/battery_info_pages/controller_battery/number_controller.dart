@@ -30,6 +30,7 @@ class NumberController extends GetxController {
   Future<void> get_user_selected_value()async{
     SharedPreferences perf = await SharedPreferences.getInstance();
     selectedNumber.value=perf.getInt('user_picker_value')?? bat.battery_level.value;
+    bat.onlys_charging.value=perf.getBool('only_charging')??false;
   }
 
 }

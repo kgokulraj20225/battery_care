@@ -59,28 +59,22 @@ class song_picker_controller extends GetxController {
   }
 
   // og code
-  void alarm_on_off_switch_do_logic(int value) async {
+  void alarm_on_off_switch_do_logic() async {
     final service = FlutterBackgroundService();
     if (alarm_on_off.value) {
-      // if (value != battery.battery_level.value) {
-      //   // return ;
-      //   stopSong();
-      //   // service.invoke('stopAlarm');
-      //   // await NotificationService().showNotification(
-      //   //   id: 1,
-      //   //   title: "Alarm!",
-      //   //   body: "Wake up!",
-      //   // );
-      // }
-      // // else{
-      // //   stopSong();
-      // // }
+      if(battery.onlys_charging.value ) {
+        if(battery.battery_state.value=='discharging'){
+          // service.invoke('stopService');
+          return;
+        }
+      }
       service.invoke('stopService');
       await initializeService();
     } else {
       service.invoke('stopService'); // stop background
       stopSong();
     }
+    await Future.delayed(const Duration(milliseconds: 300));
     print('alarm : ${alarm_on_off.value}');
   }
 
@@ -120,7 +114,7 @@ class song_picker_controller extends GetxController {
     await get_user_select_songs();
     if (alarm_on_off.value) {
       alarm_on_off_switch_do_logic(
-          number.selectedNumber.value,
+
         );
     }
   }

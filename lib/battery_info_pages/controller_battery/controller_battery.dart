@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/physics.dart';
 import 'package:get/get.dart';
 import 'package:battery_plus/battery_plus.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:trial_app/battery_info_pages/controller_battery/song_picker_controller.dart';
 
 import 'number_controller.dart';
@@ -15,6 +16,7 @@ class battery_info extends GetxController with GetSingleTickerProviderStateMixin
   var battery_state = ''.obs;
   var op = false.obs;
   var battery_Saver=false.obs;
+  var onlys_charging = false.obs;
   late AnimationController lottieController;
   NumberController get number => Get.find();
   song_picker_controller get song=> Get.find();
@@ -31,6 +33,10 @@ class battery_info extends GetxController with GetSingleTickerProviderStateMixin
     // ever(battery_level, (state){
     //   song.alarm_on_off_switch_do_logic(state);
     // });
+    ever(battery_state, (value){
+
+    });
+
     super.onInit();
   }
 
@@ -69,6 +75,12 @@ class battery_info extends GetxController with GetSingleTickerProviderStateMixin
     battery_Saver.value=value;
   }
 
+  void only_charging(bool value)async{
+    onlys_charging.value=value;
+    SharedPreferences perf=await SharedPreferences.getInstance();
+    perf.setBool('only_charging', onlys_charging.value);
+
+  }
 
 
 

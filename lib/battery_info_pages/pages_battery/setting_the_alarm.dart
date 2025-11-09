@@ -117,7 +117,7 @@ class _Alarm_scroll_WheelState extends State<Alarm_scroll_Wheel>
                                 onChanged: (value)=>{
                                   c.selectedNumber.value = value,
                                   c.set_user_selected_value(value),
-                                  song.alarm_on_off_switch_do_logic(c.selectedNumber.value),
+                                  song.alarm_on_off_switch_do_logic(),
                                 // await initializeService(),
                                   print('user picker number :${c.selectedNumber.value}')
                                 },
@@ -229,6 +229,43 @@ class _Alarm_scroll_WheelState extends State<Alarm_scroll_Wheel>
                 padding: const EdgeInsets.only(
                     top: 18.0, left: 8, right: 8, bottom: 8),
                 child: Obx(
+                  ()=> GestureDetector(
+                    onTap: () {
+
+                    },
+                    child: AnimatedContainer(
+                      duration: Duration(seconds: 1),
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(color: Colors.black, width: 2)),
+                      height: 100,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(18.0),
+                            child: Text('Alarm Works only Charging',
+                                style: TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.bold,
+                                )),
+                          ),
+                          Switch(activeColor: Colors.green,
+                              value: c1.onlys_charging.value, onChanged: (bool value){
+                            c1.only_charging(value);
+                            song.alarm_on_off_switch_do_logic();
+                          }),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(
+                    top: 18.0, left: 8, right: 8, bottom: 8),
+                child: Obx(
                   () => GestureDetector(
                     onTap: () async {
                       if (song.selected_song_path.isEmpty&&song.selected_song_path=='') {
@@ -276,7 +313,7 @@ class _Alarm_scroll_WheelState extends State<Alarm_scroll_Wheel>
                       } else {
                         // await initializedService();
                         song.alarm_on_off_switch();
-                        song.alarm_on_off_switch_do_logic(c.selectedNumber.value);
+                        song.alarm_on_off_switch_do_logic();
                         // song.alarm_on_off_button_fun();
                       }
                     },
@@ -316,7 +353,7 @@ class _Alarm_scroll_WheelState extends State<Alarm_scroll_Wheel>
                     ),
                   ),
                 ),
-              )
+              ),
             ],
           ),
         ),
