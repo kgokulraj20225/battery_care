@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:trial_app/battery_info_pages/controller_battery/controller_battery.dart';
+import 'package:trial_app/service/Foreground_service/foreground_service.dart';
 import 'package:trial_app/service/background_service.dart';
 import '../../service/Notification_service.dart';
 import 'number_controller.dart';
@@ -17,6 +18,16 @@ class song_picker_controller extends GetxController {
   NumberController get number => Get.find();
   final player = AudioPlayer();
   Timer? _debounce;
+
+  @override
+  void onInit() {
+    Foreground_Service.service1.on('changer_alarm_sync').listen((_) async {
+      alarm_on_off.value=false;
+      SharedPreferences perf = await SharedPreferences.getInstance();
+      perf.setBool('alarm_switch_on_off', alarm_on_off.value);
+    });
+    super.onInit();
+  }
 
   Future<void> song_picker() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(

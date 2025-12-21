@@ -1,10 +1,12 @@
 import 'dart:async';
 import 'dart:ui';
-import 'package:audioplayers/audioplayers.dart';
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:battery_plus/battery_plus.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:trial_app/service/background_service.dart';
 
 FlutterLocalNotificationsPlugin _plugin = FlutterLocalNotificationsPlugin();
 final battery = Battery();
@@ -13,7 +15,7 @@ final battery = Battery();
 Future<void> onStart(ServiceInstance service) async {
 DartPluginRegistrant.ensureInitialized();
 
-final AudioPlayer player = AudioPlayer();
+
 final SharedPreferences prefs = await SharedPreferences.getInstance();
 
 int selectedUserValue = prefs.getInt('user_picker_value') ?? 0;
@@ -27,6 +29,17 @@ if (service is AndroidServiceInstance && alarmOnOff) {
   );
 }
 
+service.on('stopAlarm').listen((event) async {
+  await Foreground_Service.stopAlarm1(prefs);
+});
+
+service.on('stopService').listen((event) async {
+  await Foreground_Service.stopAlarm1(prefs);
+  service.invoke('changer_alarm_sync');
+  service.stopSelf();
+  _plugin.cancel(77);
+});
+
 StreamSubscription<BatteryState>? batteryStateSubscription;
 batteryStateSubscription = battery.onBatteryStateChanged.listen((BatteryState state) async {
   int level = await battery.batteryLevel;
@@ -37,10 +50,50 @@ batteryStateSubscription = battery.onBatteryStateChanged.listen((BatteryState st
     // bool isActive = prefs.getBool('is_alarm_active') ?? false;
     // if (lastAlarmTime == null || DateTime.now().difference(lastAlarmTime!) > cooldownDuration) {
     print("Battery threshold reached, playing alarm");
-    // await playAlarm(flutterLocalNotificationsPlugin, player, prefs, selectedUserSongPath);
+    await Foreground_Service.playAlarm1(prefs, selectedUserSongPath);
     // lastAlarmTime = DateTime.now();
   }
+  else{
+    await Foreground_Service.stopAlarm1(prefs);
+  }
   // }
+});
+
+service.on('updateSettings').listen((event) async {
+  if (event != null) {
+    int newBatteryLevel = event["batteryLevel"];
+    String newSongPath = event["songPath"];
+    bool newAlarm = event["alarm"];
+
+    // Get current battery level to check if we need to stop alarm immediately
+    int currentLevel = await battery.batteryLevel;
+    bool wasActive = prefs.getBool('is_alarm_active') ?? false;
+
+    // Update locals
+    selectedUserValue = newBatteryLevel;
+    selectedUserSongPath = newSongPath;
+    alarmOnOff = newAlarm;
+
+    // Save to prefs
+    await prefs.setInt('user_picker_value', selectedUserValue);
+    await prefs.setString('selected_song_path', selectedUserSongPath);
+    await prefs.setBool('alarm_switch_on_off', alarmOnOff);
+
+    // Stop alarm immediately if necessary (e.g., turned off or level changed away)
+    if  (currentLevel != selectedUserValue || !alarmOnOff) {
+        print("Settings updated, stopping alarm");
+        await Foreground_Service.stopAlarm1(prefs);
+    }
+
+    if (service is AndroidServiceInstance && alarmOnOff) {
+      service.setForegroundNotificationInfo(
+        title: 'Battery Alarm Active',
+        content: '$selectedUserValue% battery level set to alarm...',
+      );
+    }
+
+    print("Updated battery level: $selectedUserValue");
+  }
 });
 
 
@@ -48,13 +101,14 @@ batteryStateSubscription = battery.onBatteryStateChanged.listen((BatteryState st
 }
 
 class Foreground_Service {
-  final service = FlutterBackgroundService();
+  static final service = FlutterBackgroundService();
+  static final AudioPlayer player=AudioPlayer();
 
   static final AndroidNotificationChannel _channel = AndroidNotificationChannel(
       'foreground_service', 'Foreground Service',
       description: 'Foreground is started', importance: Importance.high);
 
-  Future<void> init() async {
+  static Future<void> init() async {
     await _plugin
         .resolvePlatformSpecificImplementation<
             AndroidFlutterLocalNotificationsPlugin>()
@@ -82,5 +136,71 @@ class Foreground_Service {
     );
   }
 
+  static Future<void> playAlarm1(prefs,String songPath) async{
+    if (prefs.getBool('is_alarm_active') ?? false) {
+      print("Alarm already active, skipping");
+      return;
+    }
+
+    if (songPath.isEmpty) {
+      print("No song path set for alarm");
+      return;
+    }
+
+    try {
+
+      await AwesomeNotifications().createNotification(
+        content: NotificationContent(
+          id: 77,
+          channelKey: 'foreground_service',
+          title: 'Battery Care',
+          body: 'the battery percentage reached its limit',
+          category: NotificationCategory.Service,
+          autoDismissible: false,
+        ),
+        actionButtons: [
+          NotificationActionButton(
+            key: 'STOP SOUND',
+            label: 'STOP SOUND',
+            actionType: ActionType.SilentBackgroundAction,
+            showInCompactView: true,
+            autoDismissible: false,
+          ),
+          NotificationActionButton(
+            key: 'STOP',
+            label: 'Stop',
+            isDangerousOption: true,
+            showInCompactView: true,
+            actionType: ActionType.SilentBackgroundAction,
+            autoDismissible: false,
+          ),
+        ],
+      );
+
+      await prefs.setBool('is_alarm_active', true);
+
+      await player.setFilePath(songPath);
+      await player.setLoopMode(LoopMode.one);
+      await player.play();
+
+    }catch (e) {
+      print("Error playing alarm: $e");
+      await prefs.setBool('is_alarm_active', false);
+    }
+  }
+
+  static Future<void> stopAlarm1(
+      SharedPreferences prefs,
+      ) async {
+    if (player.playing) {
+      await player.stop();
+      await player.setLoopMode(LoopMode.off);
+    }
+    await prefs.setBool('is_alarm_active', false);
+    // await notificationsPlugin.cancel(77); // Matching the alarm notification ID
+    print("Alarm stopped");
+  }
+
+  static FlutterBackgroundService get service1 => service;
 
 }

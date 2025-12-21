@@ -51,6 +51,7 @@ dependencies:
   flutter_background_service_android: ^6.3.1
   permission_handler: ^11.3.1
   android_intent_plus: ^4.0.0
+  awesome_notifications: ^0.9.3
 
 
 #  battery_info: ^1.1.1
