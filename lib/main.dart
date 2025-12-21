@@ -1,3 +1,4 @@
+import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
@@ -14,8 +15,12 @@ import 'battery_info_pages/pages_battery/animation_pages.dart';
 
 
 
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+FlutterLocalNotificationsPlugin();
+
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
+  await initializeService();
   // await NotificationService().init();
   // Set background handler (MUST be top-level or static)
   // Get.put(battery_info(),permanent: true);
@@ -23,6 +28,8 @@ void main() async{
   // Get.put(NumberController(),permanent: true);
   runApp(myapp());
 }
+
+
 
 class myapp extends StatefulWidget {
   const myapp({super.key});

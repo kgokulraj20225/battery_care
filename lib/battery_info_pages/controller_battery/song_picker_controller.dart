@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:get/get.dart';
@@ -7,7 +6,6 @@ import 'package:just_audio/just_audio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:trial_app/battery_info_pages/controller_battery/controller_battery.dart';
 import 'package:trial_app/service/background_service.dart';
-
 import '../../service/Notification_service.dart';
 import 'number_controller.dart';
 
@@ -64,17 +62,21 @@ class song_picker_controller extends GetxController {
     if (alarm_on_off.value) {
       if(battery.onlys_charging.value ) {
         if(battery.battery_state.value=='discharging'){
-          // service.invoke('stopService');
+          service.invoke('stopService');
           return;
         }
       }
-      service.invoke('stopService');
-      await initializeService();
+      await service.startService();
+      service.invoke('updateSettings', {
+        "batteryLevel": number.selectedNumber.value,
+        "songPath": selected_song_path.value,
+        "alarm": alarm_on_off.value
+      });
     } else {
       service.invoke('stopService'); // stop background
       stopSong();
     }
-    await Future.delayed(const Duration(milliseconds: 300));
+    // await Future.delayed(const Duration(milliseconds: 300));
     print('alarm : ${alarm_on_off.value}');
   }
 

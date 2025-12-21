@@ -14,6 +14,7 @@ class NumberController extends GetxController {
     // ever(selectedNumber, (value){
     //   song.alarm_on_off_switch_do_logic(value);
     // });
+    selectedNumber.value = bat.battery_level.value;
     super.onInit();
   }
 

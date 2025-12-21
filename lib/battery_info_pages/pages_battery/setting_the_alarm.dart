@@ -6,6 +6,7 @@ import 'package:numberpicker/numberpicker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../service/background_service.dart';
+import '../../service/battery_optimize_code.dart';
 import '../controller_battery/animation_controller.dart';
 import '../controller_battery/controller_battery.dart';
 import '../controller_battery/number_controller.dart';
@@ -312,6 +313,7 @@ class _Alarm_scroll_WheelState extends State<Alarm_scroll_Wheel>
                         );
                       } else {
                         // await initializedService();
+                        // await openBatteryOptimizationSettings();
                         song.alarm_on_off_switch();
                         song.alarm_on_off_switch_do_logic();
                         // song.alarm_on_off_button_fun();

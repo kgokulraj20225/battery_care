@@ -47,9 +47,10 @@ dependencies:
   just_audio:
   lottie: ^3.2.0
   numberpicker:
-  flutter_background_service:
-  flutter_background_service_android:
+  flutter_background_service: ^5.1.0
+  flutter_background_service_android: ^6.3.1
   permission_handler: ^11.3.1
+  android_intent_plus: ^4.0.0
 
 
 #  battery_info: ^1.1.1
