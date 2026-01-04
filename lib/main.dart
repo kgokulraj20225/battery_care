@@ -16,14 +16,10 @@ import 'battery_info_pages/controller_battery/song_picker_controller.dart';
 import 'battery_info_pages/pages_battery/animation_pages.dart';
 
 
-
-final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-FlutterLocalNotificationsPlugin();
-
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
+  // await NotificationInit.init();
   await Foreground_Service.init();
-  await NotificationInit.init();
   // await initializeService();
   // await NotificationService().init();
   // Set background handler (MUST be top-level or static)

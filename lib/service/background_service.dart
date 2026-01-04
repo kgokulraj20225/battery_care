@@ -1024,9 +1024,6 @@ void onStart(ServiceInstance service) async {
             print("Updated battery level: $selectedUserValue");
         }
     });
-
-
-
 }
 
 // Play alarm with notification
@@ -1056,7 +1053,6 @@ Future<void> playAlarm(
         await player.setFilePath(songPath);
         await player.setLoopMode(LoopMode.one);
         await player.play();
-
         await plugin.show(
             1000,
             'Battery Level Reached',

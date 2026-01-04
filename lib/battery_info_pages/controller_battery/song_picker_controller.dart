@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:trial_app/battery_info_pages/controller_battery/controller_battery.dart';
+import 'package:trial_app/service/Foreground_service/awsome_notification_init.dart';
 import 'package:trial_app/service/Foreground_service/foreground_service.dart';
 import 'package:trial_app/service/background_service.dart';
 import '../../service/Notification_service.dart';
@@ -77,6 +78,7 @@ class song_picker_controller extends GetxController {
           return;
         }
       }
+      await NotificationInit.requestPermissionIfNeeded();
       await service.startService();
       service.invoke('updateSettings', {
         "batteryLevel": number.selectedNumber.value,

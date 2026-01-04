@@ -102,6 +102,7 @@
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS"/>
 
     <!-- Your existing permissions can stay -->
 
@@ -125,6 +126,14 @@
         />
 
         <!-- 🔄 RESTART AFTER BOOT -->
+        <receiver
+            android:name=".BootReceiver"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+            </intent-filter>
+        </receiver>
         <receiver
             android:name="me.carda.awesome_notifications.core.receivers.DismissedNotificationReceiver"
             android:exported="false"/>
