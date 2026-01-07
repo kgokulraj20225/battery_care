@@ -97,6 +97,7 @@
 
     <!-- REQUIRED PERMISSIONS -->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
@@ -134,17 +135,17 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
             </intent-filter>
         </receiver>
-        <receiver
-            android:name="me.carda.awesome_notifications.core.receivers.DismissedNotificationReceiver"
-            android:exported="false"/>
+<!--        <receiver-->
+<!--            android:name="me.carda.awesome_notifications.core.receivers.DismissedNotificationReceiver"-->
+<!--            android:exported="false"/>-->
 
-        <receiver
-            android:name="me.carda.awesome_notifications.core.receivers.ActionReceiver"
-            android:exported="false"/>
+<!--        <receiver-->
+<!--            android:name="me.carda.awesome_notifications.core.receivers.ActionReceiver"-->
+<!--            android:exported="false"/>-->
 
-        <receiver
-            android:name="me.carda.awesome_notifications.core.receivers.CreatedNotificationReceiver"
-            android:exported="false"/>
+<!--        <receiver-->
+<!--            android:name="me.carda.awesome_notifications.core.receivers.CreatedNotificationReceiver"-->
+<!--            android:exported="false"/>-->
         <receiver
             android:name="com.example.trial_app.RestartReceiver"
             android:enabled="true"

@@ -78,7 +78,7 @@ class song_picker_controller extends GetxController {
           return;
         }
       }
-      await NotificationInit.requestPermissionIfNeeded();
+      // await NotificationInit.requestPermissionIfNeeded();
       await service.startService();
       service.invoke('updateSettings', {
         "batteryLevel": number.selectedNumber.value,

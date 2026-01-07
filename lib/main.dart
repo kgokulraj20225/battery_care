@@ -20,19 +20,29 @@ void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   // await NotificationInit.init();
   await Foreground_Service.init();
+  final NotificationAppLaunchDetails? details =
+  await Foreground_Service.plugin.getNotificationAppLaunchDetails();
+
+  String? init_payload;
+
+  if(details?.didNotificationLaunchApp ??false){
+    init_payload=details!.notificationResponse!.payload;
+  }
+
   // await initializeService();
   // await NotificationService().init();
   // Set background handler (MUST be top-level or static)
   // Get.put(battery_info(),permanent: true);
   // Get.put(song_picker_controller(), permanent:true);
   // Get.put(NumberController(),permanent: true);
-  runApp(myapp());
+  runApp(myapp(initplayload: init_payload,));
 }
 
 
 
 class myapp extends StatefulWidget {
-  const myapp({super.key});
+  dynamic initplayload;
+   myapp({super.key,this.initplayload});
 
   @override
   State<myapp> createState() => _myappState();
@@ -43,7 +53,7 @@ class _myappState extends State<myapp> {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      initialRoute: AppRoutes.home,
+      initialRoute:widget.initplayload=='page_change'?AppRoutes.alarm_set_page:AppRoutes.home,
       getPages: AppRoutes.route,
     );
   }

@@ -4,7 +4,6 @@ import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 import 'package:numberpicker/numberpicker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import '../../service/background_service.dart';
 import '../../service/battery_optimize_code.dart';
 import '../controller_battery/animation_controller.dart';
@@ -21,6 +20,14 @@ class set_alarm_to_cutoff extends StatefulWidget {
 
 class _set_alarm_to_cutoffState extends State<set_alarm_to_cutoff> {
   final song_picker_controller song = Get.find();
+  final song_picker_controller c = Get.find();
+  final NumberController number = Get.find();
+  @override
+  void initState() {
+    c.get_user_select_songs();
+    number.get_user_selected_value();
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -230,35 +237,30 @@ class _Alarm_scroll_WheelState extends State<Alarm_scroll_Wheel>
                 padding: const EdgeInsets.only(
                     top: 18.0, left: 8, right: 8, bottom: 8),
                 child: Obx(
-                  ()=> GestureDetector(
-                    onTap: () {
-
-                    },
-                    child: AnimatedContainer(
-                      duration: Duration(seconds: 1),
-                      decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(20),
-                          border: Border.all(color: Colors.black, width: 2)),
-                      height: 100,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(18.0),
-                            child: Text('Alarm Works only Charging',
-                                style: TextStyle(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.bold,
-                                )),
-                          ),
-                          Switch(activeColor: Colors.green,
-                              value: c1.onlys_charging.value, onChanged: (bool value){
-                            c1.only_charging(value);
-                            song.alarm_on_off_switch_do_logic();
-                          }),
-                        ],
-                      ),
+                  ()=> AnimatedContainer(
+                    duration: Duration(seconds: 1),
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(color: Colors.black, width: 2)),
+                    height: 100,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(18.0),
+                          child: Text('Alarm Works only Charging',
+                              style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold,
+                              )),
+                        ),
+                        Switch(activeColor: Colors.green,
+                            value: c1.onlys_charging.value, onChanged: (bool value){
+                          c1.only_charging(value);
+                          song.alarm_on_off_switch_do_logic();
+                        }),
+                      ],
                     ),
                   ),
                 ),

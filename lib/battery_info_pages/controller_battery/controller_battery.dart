@@ -34,7 +34,7 @@ class battery_info extends GetxController with GetSingleTickerProviderStateMixin
     //   song.alarm_on_off_switch_do_logic(state);
     // });
     ever(battery_state, (value){
-
+      song.alarm_on_off_switch_do_logic();
     });
 
     super.onInit();
@@ -55,7 +55,6 @@ class battery_info extends GetxController with GetSingleTickerProviderStateMixin
     battery.onBatteryStateChanged.listen((state){
       battery_state.value=state.name;
       getbattery_level();
-
     });
   }
 
