@@ -3,9 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 import 'package:numberpicker/numberpicker.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import '../../service/background_service.dart';
-import '../../service/battery_optimize_code.dart';
+import 'package:trial_app/battery_info_pages/controller_battery/volume_controller.dart';
+
 import '../controller_battery/animation_controller.dart';
 import '../controller_battery/controller_battery.dart';
 import '../controller_battery/number_controller.dart';
@@ -22,12 +21,14 @@ class _set_alarm_to_cutoffState extends State<set_alarm_to_cutoff> {
   final song_picker_controller song = Get.find();
   final song_picker_controller c = Get.find();
   final NumberController number = Get.find();
+
   @override
   void initState() {
     c.get_user_select_songs();
     number.get_user_selected_value();
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,14 +36,15 @@ class _set_alarm_to_cutoffState extends State<set_alarm_to_cutoff> {
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(kToolbarHeight),
         child: Obx(
-          ()=> AppBar(
+          () => AppBar(
             title: Text('Alarm page',
                 style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                     color: Colors.white)),
             centerTitle: true,
-            backgroundColor: song.alarm_on_off.value==true?Colors.green:Colors.red,
+            backgroundColor:
+                song.alarm_on_off.value == true ? Colors.green : Colors.red,
           ),
         ),
       ),
@@ -64,6 +66,7 @@ class _Alarm_scroll_WheelState extends State<Alarm_scroll_Wheel>
   final battery_info c1 = Get.find();
   final song_picker_controller song = Get.find();
   final animation_controller animate = Get.find();
+  final volume_controller volumes = Get.find();
   final Battery battery = Battery();
 
   @override
@@ -119,15 +122,17 @@ class _Alarm_scroll_WheelState extends State<Alarm_scroll_Wheel>
                                 maxValue: 100,
                                 itemHeight: 100,
                                 axis: Axis.horizontal,
-                                textStyle: TextStyle(color: Colors.grey, fontSize: 20),
+                                textStyle:
+                                    TextStyle(color: Colors.grey, fontSize: 20),
                                 selectedTextStyle: TextStyle(
                                     color: Colors.black, fontSize: 30),
-                                onChanged: (value)=>{
+                                onChanged: (value) => {
                                   c.selectedNumber.value = value,
                                   c.set_user_selected_value(value),
                                   song.alarm_on_off_switch_do_logic(),
-                                // await initializeService(),
-                                  print('user picker number :${c.selectedNumber.value}')
+                                  // await initializeService(),
+                                  print(
+                                      'user picker number :${c.selectedNumber.value}')
                                 },
                                 decoration: BoxDecoration(
                                   border: Border(
@@ -237,7 +242,7 @@ class _Alarm_scroll_WheelState extends State<Alarm_scroll_Wheel>
                 padding: const EdgeInsets.only(
                     top: 18.0, left: 8, right: 8, bottom: 8),
                 child: Obx(
-                  ()=> AnimatedContainer(
+                  () => AnimatedContainer(
                     duration: Duration(seconds: 1),
                     decoration: BoxDecoration(
                         color: Colors.white,
@@ -255,11 +260,13 @@ class _Alarm_scroll_WheelState extends State<Alarm_scroll_Wheel>
                                 fontWeight: FontWeight.bold,
                               )),
                         ),
-                        Switch(activeColor: Colors.green,
-                            value: c1.onlys_charging.value, onChanged: (bool value){
-                          c1.only_charging(value);
-                          song.alarm_on_off_switch_do_logic();
-                        }),
+                        Switch(
+                            activeColor: Colors.green,
+                            value: c1.onlys_charging.value,
+                            onChanged: (bool value) {
+                              c1.only_charging(value);
+                              song.alarm_on_off_switch_do_logic();
+                            }),
                       ],
                     ),
                   ),
@@ -271,7 +278,8 @@ class _Alarm_scroll_WheelState extends State<Alarm_scroll_Wheel>
                 child: Obx(
                   () => GestureDetector(
                     onTap: () async {
-                      if (song.selected_song_path.isEmpty&&song.selected_song_path=='') {
+                      if (song.selected_song_path.isEmpty &&
+                          song.selected_song_path == '') {
                         // 🔔 Show animated alert box
                         Get.dialog(
                           Center(
@@ -318,6 +326,8 @@ class _Alarm_scroll_WheelState extends State<Alarm_scroll_Wheel>
                         // await openBatteryOptimizationSettings();
                         song.alarm_on_off_switch();
                         song.alarm_on_off_switch_do_logic();
+                        volumes.get_user_permission();
+                        volumes.check_user_phone_volume();
                         // song.alarm_on_off_button_fun();
                       }
                     },

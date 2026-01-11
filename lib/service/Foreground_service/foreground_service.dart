@@ -255,9 +255,9 @@ Future<void> onStart(ServiceInstance service) async {
 
   service.on('stopService').listen((_) async {
     await Foreground_Service.stopAlarm1(prefs);
+    Foreground_Service.plugin.cancel(77);
     service.stopSelf();
-    service.invoke('changer_alarm_sync');
-    // _plugin.cancel(77);
+
   });
 
   StreamSubscription<BatteryState>? batteryStateSubscription;
@@ -425,10 +425,14 @@ class Foreground_Service {
 
   static Future<void> song_play(prefs, String songPath) async {
     if(player.playing) return;
+
     await prefs.setBool('is_alarm_active', true);
     await player.setFilePath(songPath);
     await player.setLoopMode(LoopMode.one);
     await player.play();
+    service.invoke('players',{
+      "play":true
+    });
   }
 
   static Future<void> stopAlarm1(SharedPreferences prefs) async {

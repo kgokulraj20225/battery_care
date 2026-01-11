@@ -6,9 +6,9 @@ import 'package:get/get.dart';
 import 'package:battery_plus/battery_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:trial_app/battery_info_pages/controller_battery/song_picker_controller.dart';
-
+import 'package:trial_app/service/Foreground_service/foreground_service.dart';
 import 'number_controller.dart';
-// import 'package:battery_info/battery_info_plugin.dart';
+
 
 class battery_info extends GetxController with GetSingleTickerProviderStateMixin{
   final Battery battery = Battery();
@@ -29,14 +29,6 @@ class battery_info extends GetxController with GetSingleTickerProviderStateMixin
     // });
     get_batter_state_fun();
     lottieController = AnimationController(vsync: this);
-
-    // ever(battery_level, (state){
-    //   song.alarm_on_off_switch_do_logic(state);
-    // });
-    ever(battery_state, (value){
-      song.alarm_on_off_switch_do_logic();
-    });
-
     super.onInit();
   }
 
@@ -45,6 +37,7 @@ class battery_info extends GetxController with GetSingleTickerProviderStateMixin
     lottieController.dispose();
     super.onClose();
   }
+
   Color get maincolor{
     if(battery_Saver.value) return Colors.orange;
     if(battery_state.value=='charging') return Colors.green;
@@ -53,10 +46,13 @@ class battery_info extends GetxController with GetSingleTickerProviderStateMixin
 
   void get_batter_state_fun(){
     battery.onBatteryStateChanged.listen((state){
-      battery_state.value=state.name;
+      battery_state.value=state.name; 
       getbattery_level();
+
     });
   }
+
+
 
   Future<void> getbattery_level() async {
     battery_level.value = await battery.batteryLevel;
@@ -65,11 +61,12 @@ class battery_info extends GetxController with GetSingleTickerProviderStateMixin
 
   void option(bool value) async{
     op.value=value;
-
   }
+
   void stopAnimation() {
     lottieController.stop();
   }
+
   void batterys_saver(bool value) async{
     battery_Saver.value=value;
   }
@@ -81,7 +78,18 @@ class battery_info extends GetxController with GetSingleTickerProviderStateMixin
 
   }
 
-
+  Future<void> auto_trigger_when_charging() async{
+    SharedPreferences perf=await SharedPreferences.getInstance();
+    onlys_charging.value = perf.getBool('only_charging') ?? false;
+    if(onlys_charging.value==true && battery_state.value=='charging') {
+      song.alarm_on_off_switch_do_logic();
+      return;
+    }
+    else{
+      Foreground_Service.service1.invoke('stopService');
+      return;
+    }
+  }
 
   // void getbattery_state() async{
   //   final BatteryState state = await battery.batteryState;

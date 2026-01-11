@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:lottie/lottie.dart';
 import 'package:trial_app/battery_info_pages/controller_battery/animation_controller.dart';
 import 'package:trial_app/battery_info_pages/pages_battery/animation_pages.dart';
@@ -23,6 +24,7 @@ class _song_pickerState extends State<song_picker> {
   final battery_info bt = Get.find();
   final animation_controller animate = Get.find();
   final NumberController number =Get.find();
+  final AudioPlayer player=AudioPlayer();
 
 
   @override
@@ -31,7 +33,9 @@ class _song_pickerState extends State<song_picker> {
     animate.get_anime_value();
     number.get_user_selected_value();
     c.get_user_select_songs();
-    // c.alarm_on_off_switch_do_logic(number.selectedNumber.value);
+    c.demo_fun_for_auto_start_app_cal_alarm();
+    print('alarm is on or off : ${c.alarm_on_off.value}');
+
     super.initState();
   }
   @override
@@ -54,6 +58,11 @@ class _song_pickerState extends State<song_picker> {
             // };
           }),
         ),
+        actions: [
+          IconButton(onPressed: (){
+            Get.toNamed(AppRoutes.about_apps);
+          }, icon: Icon(Icons.info))
+        ],
         backgroundColor: Colors.white,
       ),
       body: Padding(

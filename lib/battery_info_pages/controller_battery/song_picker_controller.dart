@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:trial_app/battery_info_pages/controller_battery/controller_battery.dart';
+import 'package:trial_app/battery_info_pages/controller_battery/volume_controller.dart';
 import 'package:trial_app/service/Foreground_service/awsome_notification_init.dart';
 import 'package:trial_app/service/Foreground_service/foreground_service.dart';
 import 'package:trial_app/service/background_service.dart';
@@ -17,16 +18,18 @@ class song_picker_controller extends GetxController {
   var alarm_on_off = false.obs;
   final battery_info battery = Get.find();
   NumberController get number => Get.find();
+  volume_controller get volumes => Get.find();
   final player = AudioPlayer();
   Timer? _debounce;
+  final  players=false.obs;
 
   @override
   void onInit() {
-    Foreground_Service.service1.on('changer_alarm_sync').listen((_) async {
-      alarm_on_off.value=false;
-      SharedPreferences perf = await SharedPreferences.getInstance();
-      perf.setBool('alarm_switch_on_off', alarm_on_off.value);
-    });
+    // Foreground_Service.service1.on('changer_alarm_sync').listen((_) async {
+    //   alarm_on_off.value=false;
+    //   SharedPreferences perf = await SharedPreferences.getInstance();
+    //   perf.setBool('alarm_switch_on_off', alarm_on_off.value);
+    // });
     super.onInit();
   }
 
@@ -45,6 +48,19 @@ class song_picker_controller extends GetxController {
     }
   }
 
+  Future<void> demo_fun_for_auto_start_app_cal_alarm() async{
+    SharedPreferences perf = await SharedPreferences.getInstance();
+    alarm_on_off.value = perf.getBool('alarm_switch_on_off') ?? false;
+
+    Foreground_Service.service1.on('players').listen((event){
+       players.value = event!['play'];
+          });
+    if(alarm_on_off.value==true && players.value==false){
+      alarm_on_off_switch_do_logic();
+      return;
+    }
+  }
+
   Future<void> get_user_select_songs() async {
     SharedPreferences perf = await SharedPreferences.getInstance();
     selected_song.value =
@@ -52,6 +68,7 @@ class song_picker_controller extends GetxController {
     selected_song_path.value =
         perf.getString('selected_song_path') ?? selected_song_path.value;
     alarm_on_off.value = perf.getBool('alarm_switch_on_off') ?? false;
+    volumes.allow.value=perf.getBool('allow')??false;
   }
 
   Future<void> playselectedsongs() async {
@@ -86,6 +103,7 @@ class song_picker_controller extends GetxController {
         "alarm": alarm_on_off.value
       });
     } else {
+
       service.invoke('stopService'); // stop background
       stopSong();
     }
@@ -116,23 +134,11 @@ class song_picker_controller extends GetxController {
   //   });
   // }
 
-
-
-
   Future<void> stopSong() async {
     await player.stop();
     await player.setLoopMode(LoopMode.off);
   }
 
-  Future<void> initializeAlarmState() async {
-    await number.get_user_selected_value();
-    await get_user_select_songs();
-    if (alarm_on_off.value) {
-      alarm_on_off_switch_do_logic(
-
-        );
-    }
-  }
 }
 
 

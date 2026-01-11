@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:trial_app/battery_info_pages/controller_battery/animation_controller.dart';
 import 'package:trial_app/battery_info_pages/controller_battery/controller_battery.dart';
+import 'package:trial_app/battery_info_pages/controller_battery/volume_controller.dart';
 // import 'package:trial_app/battery_info//';
 
 class battery_info_pages extends StatefulWidget {
@@ -43,7 +44,7 @@ class Features extends StatefulWidget {
 class _FeaturesState extends State<Features> {
   final battery_info bt=Get.find();
   final animation_controller animate=Get.find();
-  bool to_store_anime=false;
+  final volume_controller volumess=Get.find();
 
 
   @override
@@ -59,6 +60,8 @@ class _FeaturesState extends State<Features> {
     return Padding(
       padding: const EdgeInsets.all(20.0),
       child: Wrap(
+        spacing: 0,
+        runSpacing: 12,
         children: [
           Obx(
             ()=> AnimatedContainer(
@@ -91,6 +94,32 @@ class _FeaturesState extends State<Features> {
               // color: Colors.white,
             ),
           ),
+          Obx(
+            ()=> AnimatedContainer(
+              duration: Duration(seconds: 1),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(color: Colors.black,width: 2)
+              ),
+              height: 100,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Media Volume',style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold),),
+                    Slider(value: volumess.volumes.value, onChanged: (double value) {
+                      volumess.set_current_volume(value);
+                    },max: 1.0,min:0.0,activeColor: volumess.volumes.value>0.8?Colors.red:Colors.blue,),
+                  ],
+                ),
+              )
+              // color: Colors.white,
+            ),
+          ),
+
         ],
       ),
     );
