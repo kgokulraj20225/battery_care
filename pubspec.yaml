@@ -62,6 +62,13 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  flutter_launcher_icons: ^0.13.1
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/img_1.png"
+
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
@@ -93,6 +100,8 @@ flutter:
     - assets/img.png
     - assets/ChatGPT Image Oct 12, 2025, 11_58_47 PM.png
     - assets/lottie/Alarm Clock.json
+    - assets/img_1.png
+
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

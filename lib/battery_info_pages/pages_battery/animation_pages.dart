@@ -84,7 +84,6 @@ class _FeaturesState extends State<Features> {
                      Switch(
                       activeColor:Colors.deepPurple,
                       onChanged: (bool newValue) {
-
                         animate.stop(newValue);
                       },
                       value: animate.animation.value,

@@ -109,7 +109,7 @@
     <!-- Your existing permissions can stay -->
 
     <application
-        android:label="trial_app"
+        android:label="Battery Care"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
 
